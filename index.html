@@ -36,7 +36,7 @@ h1{font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-1.5px;margin:
 .word-entry input{min-width:0;width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:10px 11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;outline:none}
 .word-entry input:focus,.final-input:focus{border-color:#d6a52d;box-shadow:0 0 0 3px #f6c45333}
 .check-word{border:0;background:var(--navy);color:white;border-radius:10px;padding:0 13px;font-size:12px;font-weight:800}
-.word-feedback{font-size:12px;min-height:18px;margin-top:8px;color:var(--muted)}
+.word-clue{margin:-6px 0 10px;line-height:1.4;color:#657287}.word-feedback{font-size:12px;min-height:18px;margin-top:8px;color:var(--muted)}
 .solved-letters{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .letter-tile{width:34px;height:38px;border:1px solid #d5dde7;border-radius:9px;display:grid;place-items:center;font-weight:900;background:#f8fafc;color:var(--navy)}
 .letter-tile.circled{border:2px solid #d59a13;background:#fff5d9;border-radius:50%;color:#805b0b}
@@ -106,7 +106,7 @@ h1{font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-1.5px;margin:
       <div class="word-grid" id="wordGrid"></div>
 
       <div class="clue-section">
-        <h2 class="clue-title">Look at the cartoon. What is the phrase?</h2>
+        <h2 class="clue-title">Final puzzle clue</h2>
         <div class="cartoon">
           <div class="cartoon-emoji" id="cartoonEmoji" aria-hidden="true">🧠💭</div>
           <div class="cartoon-copy"><strong id="cartoonTitle">A tricky thought!</strong><span id="cartoonClue">This picture hints at a phrase. Use every circled letter to solve it.</span></div>
@@ -160,43 +160,113 @@ h1{font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-1.5px;margin:
   or publish changes to everyone without replacing the hosted file.
 */
 const PUZZLES = [{
-  date: "2026-10-29",
-  solutionDate: "2026-10-30",
-  title: "Thursday's WordWit",
+  date: "2026-10-29", solutionDate: "2026-10-30", title: "Thursday's WordWit",
   words: [
-    { scramble: "DROW", answer: "WORD", circled: [1,2] },
-    { scramble: "DRIB", answer: "BIRD", circled: [3,4] },
-    { scramble: "MEGA", answer: "GAME", circled: [1,2] },
-    { scramble: "ITEM", answer: "TIME", circled: [3,4] }
+    { scramble: "DROW", answer: "WORD", circled: [1,2], clue: "A unit of language made from letters." },
+    { scramble: "DRIB", answer: "BIRD", circled: [3,4], clue: "A feathered animal that usually flies." },
+    { scramble: "MEGA", answer: "GAME", circled: [1,2], clue: "An activity played for fun or competition." },
+    { scramble: "ITEM", answer: "TIME", circled: [3,4], clue: "What clocks measure." }
   ],
-  finalAnswer: "WORD GAME",
-  cartoonEmoji: "🎲",
-  cartoonTitle: "Let the games begin!",
+  finalAnswer: "WORD GAME", cartoonEmoji: "🎲", cartoonTitle: "Let the games begin!",
   cartoonClue: "A playful phrase for something you can play."
 },{
-  date: "2026-10-30",
-  solutionDate: "2026-10-31",
-  title: "Friday's WordWit",
+  date: "2026-10-30", solutionDate: "2026-10-31", title: "Friday's WordWit",
   words: [
-    { scramble: "DABER", answer: "BREAD", circled: [1,2,4] },
-    { scramble: "TONES", answer: "STONE", circled: [1,2,5] },
-    { scramble: "INART", answer: "TRAIN", circled: [4,5] },
-    { scramble: "REAP", answer: "PEAR", circled: [2,3,4] }
+    { scramble: "DABER", answer: "BREAD", circled: [1,2,4], clue: "A staple food often baked into a loaf." },
+    { scramble: "TONES", answer: "STONE", circled: [1,2,5], clue: "A small piece of rock." },
+    { scramble: "INART", answer: "TRAIN", circled: [4,5], clue: "A long vehicle that runs on railway tracks." },
+    { scramble: "REAP", answer: "PEAR", circled: [2,3,4], clue: "A sweet fruit, often shaped like a bell." }
   ],
-  finalAnswer: "BRAIN TEASER",
-  cartoonEmoji: "🧠💭",
-  cartoonTitle: "A tricky thought!",
+  finalAnswer: "BRAIN TEASER", cartoonEmoji: "🧠💭", cartoonTitle: "A tricky thought!",
   cartoonClue: "A clever challenge that makes you stop and think."
+},{
+  date: "2026-10-31", solutionDate: "2026-11-01", title: "Saturday's WordWit · Family Time",
+  words: [
+    { scramble: "FELAM", answer: "FLAME", circled: [1,3,4], clue: "A bright, flickering part of a fire." },
+    { scramble: "TILIM", answer: "LIMIT", circled: [1,2], clue: "A boundary or maximum amount." },
+    { scramble: "TYISM", answer: "MISTY", circled: [2,4,5], clue: "Covered with a light haze." },
+    { scramble: "REEMT", answer: "METER", circled: [1,2], clue: "A unit used to measure length." }
+  ],
+  finalAnswer: "FAMILY TIME", cartoonEmoji: "👨‍👩‍👧‍👦❤️", cartoonTitle: "Make time for your loved ones",
+  cartoonClue: "The moments we share with the people closest to us."
+},{
+  date: "2026-11-01", solutionDate: "2026-11-02", title: "Sunday's WordWit · Good Day",
+  words: [
+    { scramble: "NOGDEL", answer: "GOLDEN", circled: [1,2,4], clue: "A precious yellow colour, like the metal." },
+    { scramble: "DOOW", answer: "WOOD", circled: [2,4], clue: "The material that comes from trees." },
+    { scramble: "CENAD", answer: "DANCE", circled: [2], clue: "Move rhythmically to music." },
+    { scramble: "GNUOY", answer: "YOUNG", circled: [1], clue: "Not old; in an early stage of life." }
+  ],
+  finalAnswer: "GOOD DAY", cartoonEmoji: "🌞😊", cartoonTitle: "A bright start",
+  cartoonClue: "A cheerful greeting or wish for someone's day."
+},{
+  date: "2026-11-02", solutionDate: "2026-11-03", title: "Monday's WordWit · Travel More",
+  words: [
+    { scramble: "NITAR", answer: "TRAIN", circled: [1,2,3], clue: "A rail journey can begin aboard this." },
+    { scramble: "VELEL", answer: "LEVEL", circled: [1,2,3], clue: "A degree, stage or height." },
+    { scramble: "TROOM", answer: "MOTOR", circled: [1,2], clue: "An engine that produces movement." },
+    { scramble: "VRIER", answer: "RIVER", circled: [1,4], clue: "A natural flowing body of water." }
+  ],
+  finalAnswer: "TRAVEL MORE", cartoonEmoji: "🧳🗺️", cartoonTitle: "The world is waiting",
+  cartoonClue: "A nudge to explore new places and collect experiences."
+},{
+  date: "2026-11-03", solutionDate: "2026-11-04", title: "Tuesday's WordWit · Stay Curious",
+  words: [
+    { scramble: "SRTAS", answer: "STARS", circled: [1,2,3], clue: "They sparkle in the night sky." },
+    { scramble: "GNUOY", answer: "YOUNG", circled: [1], clue: "Fresh, youthful or not old." },
+    { scramble: "VREUC", answer: "CURVE", circled: [1,2,3], clue: "A smoothly bending line." },
+    { scramble: "OUTSIR", answer: "SUITOR", circled: [1,2,3,5], clue: "A person who is courting or pursuing a relationship." }
+  ],
+  finalAnswer: "STAY CURIOUS", cartoonEmoji: "🔎✨", cartoonTitle: "Keep asking questions",
+  cartoonClue: "A reminder to keep learning, exploring and wondering."
+},{
+  date: "2026-11-04", solutionDate: "2026-11-05", title: "Wednesday's WordWit · Be Kind",
+  words: [
+    { scramble: "DREAB", answer: "BREAD", circled: [1,3], clue: "A loaf is made from this baked staple." },
+    { scramble: "TIKES", answer: "KITES", circled: [1,2], clue: "Colourful toys flown in the wind." },
+    { scramble: "JINAN", answer: "NINJA", circled: [1], clue: "A stealthy martial-arts figure from Japan." },
+    { scramble: "NACED", answer: "DANCE", circled: [1], clue: "Move to a rhythm or music." }
+  ],
+  finalAnswer: "BE KIND", cartoonEmoji: "🤝💛", cartoonTitle: "Small acts matter",
+  cartoonClue: "A simple reminder to treat others with care."
+},{
+  date: "2026-11-05", solutionDate: "2026-11-06", title: "Thursday's WordWit · Have Fun",
+  words: [
+    { scramble: "PYHAP", answer: "HAPPY", circled: [1,2], clue: "Feeling pleased, joyful or content." },
+    { scramble: "TROVE", answer: "VOTER", circled: [1,4], clue: "A person who casts a ballot." },
+    { scramble: "ZYFUZ", answer: "FUZZY", circled: [1,2], clue: "Soft, fluffy or not sharply defined." },
+    { scramble: "THIGN", answer: "NIGHT", circled: [1], clue: "The dark part of the 24-hour day." }
+  ],
+  finalAnswer: "HAVE FUN", cartoonEmoji: "🎈🎉", cartoonTitle: "Enjoy the moment",
+  cartoonClue: "Two words that describe what a good game should bring."
+},{
+  date: "2026-11-06", solutionDate: "2026-11-07", title: "Friday's WordWit · Keep Smiling",
+  words: [
+    { scramble: "PEEK", answer: "KEEP", circled: [1,2,3,4], clue: "To hold on to or retain something." },
+    { scramble: "LIMES", answer: "SMILE", circled: [1,2,3,4], clue: "A happy expression made with your mouth." },
+    { scramble: "XPIEL", answer: "PIXEL", circled: [2], clue: "A tiny unit of a digital image." },
+    { scramble: "HTIGN", answer: "NIGHT", circled: [1,3], clue: "The time between sunset and sunrise." }
+  ],
+  finalAnswer: "KEEP SMILING", cartoonEmoji: "😄🌈", cartoonTitle: "Pass on a little happiness",
+  cartoonClue: "A cheerful message encouraging a positive expression."
 }];
 
 // Paste your deployed Google Apps Script Web App URL here after deployment.
 const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx47UhSSJeIlhinf76C0qrgSGApvFTZmQIqc3URYCPSBiNrup5pog5z_n0UOYLE0vo9/exec";
 
 const $ = id => document.getElementById(id);
-const todayISO = () => {
-  const parts = new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
-  return parts;
+const indiaParts = () => {
+  const parts = new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",hourCycle:"h23"}).formatToParts(new Date());
+  return Object.fromEntries(parts.map(p=>[p.type,p.value]));
 };
+// WordWit day changes at 06:00 Asia/Kolkata, not at midnight.
+const wordwitDate = () => {
+  const p=indiaParts();
+  const y=Number(p.year),m=Number(p.month),d=Number(p.day),h=Number(p.hour);
+  const effective=new Date(Date.UTC(y,m-1,d-(h<6?1:0)));
+  return effective.toISOString().slice(0,10);
+};
+const todayISO = wordwitDate;
 const orderedPuzzles = [...PUZZLES].sort((a,b)=>a.date.localeCompare(b.date));
 const activePuzzle = orderedPuzzles.filter(p=>p.date<=todayISO()).slice(-1)[0] || orderedPuzzles[0];
 const previousPuzzle = orderedPuzzles.filter(p=>p.date<activePuzzle.date && p.solutionDate<=todayISO()).slice(-1)[0] || null;
@@ -204,6 +274,8 @@ const solved = new Set();
 let startTime = Date.now();
 let attempts = 0;
 let resultSaved = false;
+let puzzleCompleted = false;
+const completionKey = () => "wordwitCompleted:"+activePuzzle.date+":"+(localStorage.getItem("wordwitPlayerName")||"guest").trim().toLowerCase();
 
 function norm(s){return (s||"").toUpperCase().replace(/[^A-Z]/g,"");}
 function displayDate(iso){return new Date(iso+"T00:00:00+05:30").toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric",timeZone:"Asia/Kolkata"});}
@@ -214,7 +286,7 @@ function render(){
     $("yesterdayDate").textContent=displayDate(previousPuzzle.date);
     $("yesterdayWords").innerHTML=previousPuzzle.words.map((w,i)=>{
       const tiles=w.answer.split("").map((ch,index)=>`<span class="letter-tile ${w.circled.includes(index+1)?"circled":""}">${ch}</span>`).join("");
-      return `<div class="word-card solved"><div class="word-top"><span class="word-number">WORD ${i+1}</span><span class="word-length">${w.answer.length} LETTERS</span></div><div class="small-muted">Jumble: <strong>${w.scramble}</strong></div><div class="scramble" style="letter-spacing:3px">${w.answer}</div><div class="small-muted">Correct word and circled letters:</div><div class="solved-letters">${tiles}</div></div>`;
+      return `<div class="word-card solved"><div class="word-top"><span class="word-number">WORD ${i+1}</span><span class="word-length">${w.answer.length} LETTERS</span></div><div class="small-muted">Jumble: <strong>${w.scramble}</strong></div><div class="small-muted">Clue: ${w.clue || ""}</div><div class="scramble" style="letter-spacing:3px">${w.answer}</div><div class="small-muted">Correct word and circled letters:</div><div class="solved-letters">${tiles}</div></div>`;
     }).join("");
     const prevLetters=previousPuzzle.words.flatMap(w=>w.circled.map(pos=>w.answer[pos-1]));
     $("yesterdayLetterBank").innerHTML=prevLetters.map(ch=>`<span class="bank-tile">${ch}</span>`).join("");
@@ -230,6 +302,7 @@ function render(){
     const card=document.createElement("div");card.className="word-card";card.id="card"+i;
     card.innerHTML=`<div class="word-top"><span class="word-number">WORD ${i+1}</span><span class="word-length">${w.answer.length} LETTERS</span></div>
       <div class="scramble">${w.scramble}</div>
+      <div class="small-muted word-clue">💡 ${w.clue || "Unscramble the letters."}</div>
       <div class="word-entry"><input id="entry${i}" maxlength="6" placeholder="Your answer" aria-label="Answer for word ${i+1}" autocomplete="off"><button class="check-word" id="check${i}">CHECK</button></div>
       <div class="word-feedback" id="feedback${i}" aria-live="polite">Unscramble this word.</div><div class="solved-letters" id="tiles${i}"></div>`;
     $("wordGrid").appendChild(card);
@@ -238,6 +311,14 @@ function render(){
   });
   $("nickname").value=localStorage.getItem("wordwitPlayerName")||"";
   $("nickname").addEventListener("change",e=>localStorage.setItem("wordwitPlayerName",e.target.value.trim()));
+  puzzleCompleted=localStorage.getItem(completionKey())==="yes";
+  if(puzzleCompleted){
+    $("puzzleStatus").textContent="PUZZLE COMPLETED";
+    $("finalFeedback").textContent="You have already completed this puzzle on this browser. The next puzzle unlocks at 6:00 AM IST on its scheduled date.";
+    $("finalFeedback").className="feedback success";
+    document.querySelectorAll(".word-entry input,.check-word").forEach(el=>el.disabled=true);
+    $("finalAnswer").disabled=true; $("submitFinal").disabled=true; $("resetButton").disabled=true;
+  }
   $("resetButton").addEventListener("click",reset);
   $("submitFinal").addEventListener("click",checkFinal);
   $("finalAnswer").addEventListener("keydown",e=>{if(e.key==="Enter")checkFinal();});
@@ -250,7 +331,7 @@ function render(){
   }
 }
 function checkWord(i){
-  if(solved.has(i))return;
+  if(puzzleCompleted || solved.has(i))return;
   const playerName=$("nickname").value.trim();
   if(!playerName){$("finalFeedback").textContent="Please enter your name in Player details before submitting answers."; $("finalFeedback").className="feedback error"; $("nickname").focus(); return;}
   localStorage.setItem("wordwitPlayerName",playerName);
@@ -280,6 +361,7 @@ function updateBank(){
   if(ready)$("finalAnswer").focus();
 }
 async function checkFinal(){
+  if(puzzleCompleted)return;
   const playerName=$("nickname").value.trim();
   if(!playerName){$("finalFeedback").textContent="Please enter your name in Player details to save your result."; $("finalFeedback").className="feedback error"; $("nickname").focus(); return;}
   const guess=norm($("finalAnswer").value),target=norm(activePuzzle.finalAnswer);
@@ -292,6 +374,9 @@ async function checkFinal(){
     $("solutionBox").classList.add("show");
     $("solutionBox").innerHTML=`<strong>Correct answer: ${activePuzzle.finalAnswer}</strong><br><span class="small-muted">Time: ${seconds} seconds · Words solved: 4/4</span>`;
     $("puzzleStatus").textContent="PUZZLE SOLVED";
+    puzzleCompleted=true; localStorage.setItem(completionKey(),"yes");
+    document.querySelectorAll(".word-entry input,.check-word").forEach(el=>el.disabled=true);
+    $("finalAnswer").disabled=true; $("submitFinal").disabled=true; $("resetButton").disabled=true;
     await saveResult(playerName,seconds);
   }else{
     $("finalFeedback").textContent="Not quite. Check that you have used all the circled letters.";
@@ -322,6 +407,7 @@ async function saveResult(playerName,seconds){
   }
 }
 function reset(){
+  if(puzzleCompleted)return;
   solved.clear();attempts=0;resultSaved=false;startTime=Date.now();$("finalAnswer").value="";$("finalFeedback").textContent="";$("finalFeedback").className="feedback";
   $("solutionBox").classList.toggle("show",solutionUnlocked());
   $("solutionBox").innerHTML=solutionUnlocked()?`<strong>Yesterday's solution: ${activePuzzle.finalAnswer}</strong>`:"";
@@ -334,6 +420,13 @@ function sharePuzzle(){
   window.open(wa,"_blank","noopener");
 }
 render();
+// If the page stays open overnight, refresh automatically at the next 06:00 IST release.
+(function scheduleDailyRefresh(){
+  const p=indiaParts();
+  let target=Date.UTC(Number(p.year),Number(p.month)-1,Number(p.day),0,30,0);
+  if(Number(p.hour)>=6) target+=86400000;
+  setTimeout(()=>location.reload(),Math.max(1000,target-Date.now()+1500));
+})();
 </script>
 </body>
 </html>
