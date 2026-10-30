@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#14243b">
+<title>WordWit — Unscramble. Discover. Solve.</title>
+<meta name="description" content="A fresh daily word jumble. Unscramble four words, collect the circled letters and solve the cartoon clue.">
+<style>
+:root{--navy:#14243b;--navy2:#203956;--gold:#f6c453;--paper:#f5f7fa;--ink:#172235;--muted:#66758a;--line:#dce3eb;--green:#16845b;--red:#b54747;--white:#fff;--shadow:0 16px 42px rgba(20,36,59,.10)}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input{font:inherit}button{cursor:pointer}
+.site-header{background:var(--navy);color:white;padding:18px 20px}
+.header-inner{max-width:1080px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-size:28px;font-weight:900;letter-spacing:-1.3px}.brand span{color:var(--gold)}
+.tagline{font-size:11px;letter-spacing:2px;color:#d5dfec;font-weight:700}
+.header-pill{border:1px solid #50627a;color:#eaf0f7;border-radius:99px;padding:7px 12px;font-size:12px}
+main{max-width:900px;margin:28px auto;padding:0 16px 60px}
+.intro{text-align:center;margin:22px 0 24px}.eyebrow{color:#9a6b08;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-1.5px;margin:7px 0 9px;color:var(--navy)}
+.sub{color:var(--muted);margin:0 auto;max-width:580px}
+.panel{background:white;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 21px;border-bottom:1px solid var(--line)}
+.date-label{font-weight:800;color:var(--navy)}.small-muted{font-size:12px;color:var(--muted)}
+.status{font-size:11px;font-weight:800;padding:6px 10px;border-radius:99px;background:#fff4d7;color:#805b0b}
+.content{padding:22px}
+.instructions{display:flex;gap:12px;align-items:flex-start;background:#f7f9fc;border:1px solid #e8edf3;border-radius:14px;padding:13px 15px;margin-bottom:20px}
+.instructions .bulb{font-size:22px}.instructions p{margin:0;color:#4e5d70;font-size:13px}
+.word-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.word-card{border:1px solid var(--line);border-radius:15px;padding:15px;background:#fff;min-width:0}
+.word-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.word-number{font-size:11px;font-weight:800;letter-spacing:1.3px;color:#8a96a6}
+.word-length{font-size:11px;color:#7b8797}
+.scramble{font-size:24px;font-weight:900;letter-spacing:5px;color:var(--navy);margin:2px 0 12px}
+.word-entry{display:flex;gap:8px}
+.word-entry input{min-width:0;width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:10px 11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;outline:none}
+.word-entry input:focus,.final-input:focus{border-color:#d6a52d;box-shadow:0 0 0 3px #f6c45333}
+.check-word{border:0;background:var(--navy);color:white;border-radius:10px;padding:0 13px;font-size:12px;font-weight:800}
+.word-feedback{font-size:12px;min-height:18px;margin-top:8px;color:var(--muted)}
+.solved-letters{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.letter-tile{width:34px;height:38px;border:1px solid #d5dde7;border-radius:9px;display:grid;place-items:center;font-weight:900;background:#f8fafc;color:var(--navy)}
+.letter-tile.circled{border:2px solid #d59a13;background:#fff5d9;border-radius:50%;color:#805b0b}
+.word-card.solved{border-color:#9bd4bd;background:#fbfffd}
+.clue-section{margin-top:23px;border-top:1px solid var(--line);padding-top:21px}
+.clue-title{font-size:16px;font-weight:900;color:var(--navy);margin:0 0 10px}
+.cartoon{background:linear-gradient(135deg,#fff7df,#f3f7fc);border:1px solid #eadfbf;border-radius:16px;min-height:150px;display:flex;align-items:center;justify-content:center;gap:16px;padding:20px;text-align:center}
+.cartoon-emoji{font-size:66px;filter:drop-shadow(0 5px 2px #14243b18)}
+.cartoon-copy{max-width:310px;text-align:left}.cartoon-copy strong{display:block;color:var(--navy);font-size:15px}.cartoon-copy span{color:#657287;font-size:12px}
+.collect{margin-top:17px;background:#f7f9fc;border-radius:14px;padding:14px}
+.collect-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.collect-head strong{font-size:13px;color:var(--navy)}
+.letter-bank{display:flex;gap:7px;flex-wrap:wrap;min-height:39px}
+.bank-tile{height:38px;min-width:34px;padding:0 7px;border-radius:9px;border:1px solid #d8e0e9;background:white;display:grid;place-items:center;font-weight:900;color:var(--navy)}
+.bank-tile.empty{color:#aab4c1;border-style:dashed;background:transparent}
+.final-section{margin-top:20px}
+.final-input{width:100%;border:1px solid #cbd5e1;border-radius:12px;padding:14px 15px;font-size:18px;font-weight:800;letter-spacing:1px;text-transform:uppercase;outline:none}
+.action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.primary,.secondary{border:0;border-radius:11px;padding:12px 17px;font-weight:800}
+.primary{background:var(--gold);color:#392b0c}.secondary{background:#edf1f6;color:var(--navy)}
+.feedback{margin-top:12px;font-size:13px;font-weight:700;min-height:20px}
+.success{color:var(--green)}.error{color:var(--red)}
+.solution-box{display:none;margin-top:18px;border:1px solid #a9d8c4;background:#f0fbf6;border-radius:14px;padding:15px}
+.solution-box.show{display:block}.solution-box strong{color:#116342}
+.below{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:17px}
+.info-card{background:white;border:1px solid var(--line);border-radius:15px;padding:16px}
+.info-card h3{font-size:13px;margin:0 0 6px;color:var(--navy)}.info-card p{font-size:12px;color:var(--muted);margin:0}
+.footer{text-align:center;color:#8490a0;font-size:11px;margin:22px 0}
+.nickname{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;margin-top:8px}
+@media(max-width:620px){.word-grid{grid-template-columns:1fr}.content{padding:15px}.panel-head{padding:14px 16px}.below{grid-template-columns:1fr}.scramble{font-size:22px}.cartoon{gap:10px}.cartoon-emoji{font-size:52px}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div><div class="brand">Word<span>Wit</span></div><div class="tagline">UNSCRAMBLE. DISCOVER. SOLVE.</div></div>
+    <div class="header-pill">THE DAILY WORD CHALLENGE</div>
+  </div>
+</header>
+<main>
+  <section class="intro">
+    <div class="eyebrow">A little wit goes a long way</div>
+    <h1>Ready to jumble your brain?</h1>
+    <p class="sub">Unscramble four words, collect the circled letters and solve the cartoon clue.</p>
+  </section>
+
+  <section class="panel" id="yesterdayPanel" style="display:none;margin-bottom:16px">
+    <div class="panel-head"><div><div class="date-label">Yesterday's complete solution</div><div class="small-muted" id="yesterdayDate"></div></div><div class="status">SOLUTION REVEALED</div></div>
+    <div class="content">
+      <p class="small-muted" style="margin-top:0">Check each jumble against its correct word, then verify the circled letters and final phrase.</p>
+      <div id="yesterdayWords" class="word-grid"></div>
+      <div class="collect" style="margin-top:16px">
+        <div class="collect-head"><strong>YESTERDAY'S CIRCLED LETTERS</strong><span class="small-muted" id="yesterdayLetterCount"></span></div>
+        <div class="letter-bank" id="yesterdayLetterBank"></div>
+      </div>
+      <div class="solution-box show" id="yesterdayAnswer" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><div class="date-label" id="puzzleDate">Today's puzzle</div><div class="small-muted">Four words · One clever answer</div></div>
+      <div class="status" id="puzzleStatus">DAILY CHALLENGE</div>
+    </div>
+    <div class="content">
+      <div class="instructions"><div class="bulb">💡</div><p><strong>How to play:</strong> Enter the correct word for each jumble. The circled letters will be revealed when you solve each word. Rearrange all the circled letters to answer the cartoon clue.</p></div>
+      <div class="word-grid" id="wordGrid"></div>
+
+      <div class="clue-section">
+        <h2 class="clue-title">Look at the cartoon. What is the phrase?</h2>
+        <div class="cartoon">
+          <div class="cartoon-emoji" id="cartoonEmoji" aria-hidden="true">🧠💭</div>
+          <div class="cartoon-copy"><strong id="cartoonTitle">A tricky thought!</strong><span id="cartoonClue">This picture hints at a phrase. Use every circled letter to solve it.</span></div>
+        </div>
+        <div class="collect">
+          <div class="collect-head"><strong>YOUR CIRCLED LETTERS</strong><span class="small-muted" id="letterCount">0 collected</span></div>
+          <div class="letter-bank" id="letterBank"></div>
+        </div>
+        <div class="final-section">
+          <label class="clue-title" for="finalAnswer">Enter your two- or three-word answer</label>
+          <input class="final-input" id="finalAnswer" autocomplete="off" placeholder="TYPE YOUR ANSWER HERE" disabled>
+          <div class="action-row">
+            <button class="primary" id="submitFinal" disabled>Check my answer</button>
+            <button class="secondary" id="resetButton" type="button">Reset puzzle</button>
+          </div>
+          <div class="feedback" id="finalFeedback" aria-live="polite"></div>
+          <div class="small-muted" id="saveStatus" aria-live="polite"></div>
+          <div class="solution-box" id="solutionBox"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="below">
+    <div class="info-card">
+      <h3>🏆 Player details</h3>
+      <p>Enter your name to save your result and track your daily participation. No account or password is required.</p>
+      <input class="nickname" id="nickname" maxlength="60" placeholder="Your name (required for result logging)" autocomplete="name" required>
+    </div>
+    <div class="info-card">
+      <h3>📣 Challenge a friend</h3>
+      <p>Share today's puzzle and see who can solve it first.</p>
+      <div class="action-row"><button class="secondary" id="shareButton">Share puzzle</button></div>
+    </div>
+  </section>
+  <div class="footer">WordWit · A daily dose of word intelligence · Original puzzle concept</div>
+</main>
+
+<script>
+/*
+  WORDWIT DAILY PUZZLE DATA
+  -------------------------
+  To add a new day, copy one puzzle object into the PUZZLES array.
+  Use the date format YYYY-MM-DD.
+  - answer: the correct unscrambled word (maximum 6 letters)
+  - scramble: a rearrangement of exactly the same letters
+  - circled: 1-based letter positions in the CORRECT word
+  - finalAnswer: two or three words; all circled letters together must match it
+  - solutionDate: date when the answer becomes visible (normally the next day)
+  This demo stores one puzzle. A static HTML file cannot generate new AI puzzles
+  or publish changes to everyone without replacing the hosted file.
+*/
+const PUZZLES = [{
+  date: "2026-10-29",
+  solutionDate: "2026-10-30",
+  title: "Thursday's WordWit",
+  words: [
+    { scramble: "DROW", answer: "WORD", circled: [1,2] },
+    { scramble: "DRIB", answer: "BIRD", circled: [3,4] },
+    { scramble: "MEGA", answer: "GAME", circled: [1,2] },
+    { scramble: "ITEM", answer: "TIME", circled: [3,4] }
+  ],
+  finalAnswer: "WORD GAME",
+  cartoonEmoji: "🎲",
+  cartoonTitle: "Let the games begin!",
+  cartoonClue: "A playful phrase for something you can play."
+},{
+  date: "2026-10-30",
+  solutionDate: "2026-10-31",
+  title: "Friday's WordWit",
+  words: [
+    { scramble: "DABER", answer: "BREAD", circled: [1,2,4] },
+    { scramble: "TONES", answer: "STONE", circled: [1,2,5] },
+    { scramble: "INART", answer: "TRAIN", circled: [4,5] },
+    { scramble: "REAP", answer: "PEAR", circled: [2,3,4] }
+  ],
+  finalAnswer: "BRAIN TEASER",
+  cartoonEmoji: "🧠💭",
+  cartoonTitle: "A tricky thought!",
+  cartoonClue: "A clever challenge that makes you stop and think."
+}];
+
+// Paste your deployed Google Apps Script Web App URL here after deployment.
+const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx47UhSSJeIlhinf76C0qrgSGApvFTZmQIqc3URYCPSBiNrup5pog5z_n0UOYLE0vo9/exec";
+
+const $ = id => document.getElementById(id);
+const todayISO = () => {
+  const parts = new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+  return parts;
+};
+const orderedPuzzles = [...PUZZLES].sort((a,b)=>a.date.localeCompare(b.date));
+const activePuzzle = orderedPuzzles.filter(p=>p.date<=todayISO()).slice(-1)[0] || orderedPuzzles[0];
+const previousPuzzle = orderedPuzzles.filter(p=>p.date<activePuzzle.date && p.solutionDate<=todayISO()).slice(-1)[0] || null;
+const solved = new Set();
+let startTime = Date.now();
+let attempts = 0;
+let resultSaved = false;
+
+function norm(s){return (s||"").toUpperCase().replace(/[^A-Z]/g,"");}
+function displayDate(iso){return new Date(iso+"T00:00:00+05:30").toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric",timeZone:"Asia/Kolkata"});}
+function solutionUnlocked(){return todayISO()>=activePuzzle.solutionDate;}
+function render(){
+  if(previousPuzzle){
+    $("yesterdayPanel").style.display="block";
+    $("yesterdayDate").textContent=displayDate(previousPuzzle.date);
+    $("yesterdayWords").innerHTML=previousPuzzle.words.map((w,i)=>{
+      const tiles=w.answer.split("").map((ch,index)=>`<span class="letter-tile ${w.circled.includes(index+1)?"circled":""}">${ch}</span>`).join("");
+      return `<div class="word-card solved"><div class="word-top"><span class="word-number">WORD ${i+1}</span><span class="word-length">${w.answer.length} LETTERS</span></div><div class="small-muted">Jumble: <strong>${w.scramble}</strong></div><div class="scramble" style="letter-spacing:3px">${w.answer}</div><div class="small-muted">Correct word and circled letters:</div><div class="solved-letters">${tiles}</div></div>`;
+    }).join("");
+    const prevLetters=previousPuzzle.words.flatMap(w=>w.circled.map(pos=>w.answer[pos-1]));
+    $("yesterdayLetterBank").innerHTML=prevLetters.map(ch=>`<span class="bank-tile">${ch}</span>`).join("");
+    $("yesterdayLetterCount").textContent=prevLetters.length+" letters";
+    $("yesterdayAnswer").innerHTML=`<strong>Final answer: ${previousPuzzle.finalAnswer}</strong><br><span class="small-muted">The circled letters rearrange to form this answer (${norm(previousPuzzle.finalAnswer).length} letters, excluding spaces).</span>`;
+  }
+  $("puzzleDate").textContent=activePuzzle.title+" · "+displayDate(activePuzzle.date);
+  $("cartoonEmoji").textContent=activePuzzle.cartoonEmoji;
+  $("cartoonTitle").textContent=activePuzzle.cartoonTitle;
+  $("cartoonClue").textContent=activePuzzle.cartoonClue;
+  $("wordGrid").innerHTML="";
+  activePuzzle.words.forEach((w,i)=>{
+    const card=document.createElement("div");card.className="word-card";card.id="card"+i;
+    card.innerHTML=`<div class="word-top"><span class="word-number">WORD ${i+1}</span><span class="word-length">${w.answer.length} LETTERS</span></div>
+      <div class="scramble">${w.scramble}</div>
+      <div class="word-entry"><input id="entry${i}" maxlength="6" placeholder="Your answer" aria-label="Answer for word ${i+1}" autocomplete="off"><button class="check-word" id="check${i}">CHECK</button></div>
+      <div class="word-feedback" id="feedback${i}" aria-live="polite">Unscramble this word.</div><div class="solved-letters" id="tiles${i}"></div>`;
+    $("wordGrid").appendChild(card);
+    $("check"+i).addEventListener("click",()=>checkWord(i));
+    $("entry"+i).addEventListener("keydown",e=>{if(e.key==="Enter")checkWord(i);});
+  });
+  $("nickname").value=localStorage.getItem("wordwitPlayerName")||"";
+  $("nickname").addEventListener("change",e=>localStorage.setItem("wordwitPlayerName",e.target.value.trim()));
+  $("resetButton").addEventListener("click",reset);
+  $("submitFinal").addEventListener("click",checkFinal);
+  $("finalAnswer").addEventListener("keydown",e=>{if(e.key==="Enter")checkFinal();});
+  $("shareButton").addEventListener("click",sharePuzzle);
+  updateBank();
+  if(solutionUnlocked()){
+    $("puzzleStatus").textContent="SOLUTION AVAILABLE";
+    $("solutionBox").classList.add("show");
+    $("solutionBox").innerHTML=`<strong>Yesterday's solution: ${activePuzzle.finalAnswer}</strong><br><span class="small-muted">The circled letters rearrange to make the answer.</span>`;
+  }
+}
+function checkWord(i){
+  if(solved.has(i))return;
+  const playerName=$("nickname").value.trim();
+  if(!playerName){$("finalFeedback").textContent="Please enter your name in Player details before submitting answers."; $("finalFeedback").className="feedback error"; $("nickname").focus(); return;}
+  localStorage.setItem("wordwitPlayerName",playerName);
+  attempts++;
+  const val=norm($("entry"+i).value),w=activePuzzle.words[i];
+  if(val!==w.answer){$("feedback"+i).textContent="Not quite. Try rearranging the letters."; $("feedback"+i).className="word-feedback error";return;}
+  solved.add(i);
+  $("card"+i).classList.add("solved");
+  $("entry"+i).disabled=true;$("check"+i).disabled=true;$("check"+i).textContent="DONE";
+  $("feedback"+i).textContent="Correct! The gold circles are your letters.";
+  $("feedback"+i).className="word-feedback success";
+  $("tiles"+i).innerHTML=w.answer.split("").map((ch,index)=>`<span class="letter-tile ${w.circled.includes(index+1)?"circled":""}">${ch}</span>`).join("");
+  updateBank();
+}
+function collectedLetters(){
+  return activePuzzle.words.flatMap((w,i)=>solved.has(i)?w.circled.map(pos=>w.answer[pos-1]):[]);
+}
+function updateBank(){
+  const letters=collectedLetters(),total=activePuzzle.words.reduce((n,w)=>n+w.circled.length,0);
+  $("letterBank").innerHTML="";
+  for(let i=0;i<total;i++){
+    const el=document.createElement("span");el.className="bank-tile"+(letters[i]?"":" empty");el.textContent=letters[i]||"·";$("letterBank").appendChild(el);
+  }
+  $("letterCount").textContent=letters.length+" of "+total+" collected";
+  const ready=solved.size===4;
+  $("finalAnswer").disabled=!ready;$("submitFinal").disabled=!ready;
+  if(ready)$("finalAnswer").focus();
+}
+async function checkFinal(){
+  const playerName=$("nickname").value.trim();
+  if(!playerName){$("finalFeedback").textContent="Please enter your name in Player details to save your result."; $("finalFeedback").className="feedback error"; $("nickname").focus(); return;}
+  const guess=norm($("finalAnswer").value),target=norm(activePuzzle.finalAnswer);
+  if(solved.size!==4)return;
+  attempts++;
+  if(guess===target){
+    const seconds=Math.max(1,Math.round((Date.now()-startTime)/1000));
+    $("finalFeedback").textContent="Brilliant! You solved WordWit in "+seconds+" seconds. 🎉";
+    $("finalFeedback").className="feedback success";
+    $("solutionBox").classList.add("show");
+    $("solutionBox").innerHTML=`<strong>Correct answer: ${activePuzzle.finalAnswer}</strong><br><span class="small-muted">Time: ${seconds} seconds · Words solved: 4/4</span>`;
+    $("puzzleStatus").textContent="PUZZLE SOLVED";
+    await saveResult(playerName,seconds);
+  }else{
+    $("finalFeedback").textContent="Not quite. Check that you have used all the circled letters.";
+    $("finalFeedback").className="feedback error";
+  }
+}
+async function saveResult(playerName,seconds){
+  if(resultSaved)return;
+  resultSaved=true;
+  const payload={
+    playerName, puzzleDate:activePuzzle.date, puzzleTitle:activePuzzle.title,
+    completedAt:new Date().toISOString(), elapsedSeconds:seconds, attempts,
+    wordsSolved:solved.size,
+    score:Math.max(0,1000-(seconds*2)-((attempts-5)*10)),
+    finalAnswerCorrect:true
+  };
+  if(!GOOGLE_SHEETS_WEB_APP_URL.startsWith("https://script.google.com/")){
+    $("saveStatus").textContent="Demo mode: result shown, but Google Sheets logging is not connected yet.";
+    return;
+  }
+  $("saveStatus").textContent="Sending your result to WordWit…";
+  try{
+    await fetch(GOOGLE_SHEETS_WEB_APP_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
+    $("saveStatus").textContent="Your result has been submitted to the WordWit results service.";
+  }catch(err){
+    resultSaved=false;
+    $("saveStatus").textContent="Could not send your result. Please try again later.";
+  }
+}
+function reset(){
+  solved.clear();attempts=0;resultSaved=false;startTime=Date.now();$("finalAnswer").value="";$("finalFeedback").textContent="";$("finalFeedback").className="feedback";
+  $("solutionBox").classList.toggle("show",solutionUnlocked());
+  $("solutionBox").innerHTML=solutionUnlocked()?`<strong>Yesterday's solution: ${activePuzzle.finalAnswer}</strong>`:"";
+  render();
+}
+function sharePuzzle(){
+  const text="Can you solve today's WordWit? Unscramble four words, collect the circled letters and solve the cartoon clue!";
+  const url=location.href;
+  const wa="https://wa.me/?text="+encodeURIComponent(text+" "+url);
+  window.open(wa,"_blank","noopener");
+}
+render();
+</script>
+</body>
+</html>
