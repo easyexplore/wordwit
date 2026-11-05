@@ -508,10 +508,13 @@ async function saveResult(playerName,seconds){
   }
   $("saveStatus").textContent="Sending your result to WordWit…";
   try{
-    await fetch(GOOGLE_SHEETS_WEB_APP_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
-    $("saveStatus").textContent="Your result has been submitted. Your cumulative scorecard will refresh shortly.";
-    setTimeout(loadPlayerStats,1800);
+    // Send the completed game result through the same POST helper used by subscriptions.
+    console.info("WordWit: submitting game result", payload);
+    await postWordWitAction(payload);
+    $("saveStatus").textContent="Your result submission has been sent to WordWit. Refreshing your scorecard…";
+    setTimeout(loadPlayerStats,2000);
   }catch(err){
+    console.error("WordWit result submission failed:",err);
     resultSaved=false;
     $("saveStatus").textContent="Could not send your result. Please try again later.";
   }
@@ -555,7 +558,18 @@ function escapeHtml(value){
 }
 
 function postWordWitAction(payload){
-  return fetch(GOOGLE_SHEETS_WEB_APP_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
+  if(!GOOGLE_SHEETS_WEB_APP_URL.startsWith("https://script.google.com/macros/s/")){
+    return Promise.reject(new Error("WordWit Apps Script URL is missing or invalid."));
+  }
+  console.info("WordWit: sending POST action", payload && payload.action ? payload.action : "game-result");
+  return fetch(GOOGLE_SHEETS_WEB_APP_URL,{
+    method:"POST",
+    mode:"no-cors",
+    redirect:"follow",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify(payload),
+    cache:"no-store"
+  });
 }
 async function subscribeToWordWit(){
   const name=$("nickname").value.trim();
