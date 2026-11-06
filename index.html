@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#14243b">
 <title>WordWit — Unscramble. Discover. Solve.</title>
-<meta name="description" content="A fresh daily word jumble. Unscramble four words, collect the circled letters and solve the cartoon clue.">
+<meta name="description" content="A fresh daily word jumble. Unscramble four words, collect the shuffled circled letters and solve the final word.">
 <style>
 :root{--navy:#14243b;--navy2:#203956;--gold:#f6c453;--paper:#f5f7fa;--ink:#172235;--muted:#66758a;--line:#dce3eb;--green:#16845b;--red:#b54747;--white:#fff;--shadow:0 16px 42px rgba(20,36,59,.10)}
 *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -31,7 +31,7 @@ h1{font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-1.5px;margin:
 .word-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
 .word-number{font-size:11px;font-weight:800;letter-spacing:1.3px;color:#8a96a6}
 .word-length{font-size:11px;color:#7b8797}
-.scramble{font-size:24px;font-weight:900;letter-spacing:5px;color:var(--navy);margin:2px 0 12px}
+.scramble{font-size:clamp(17px,4vw,24px);font-weight:900;letter-spacing:3px;color:var(--navy);margin:2px 0 12px;overflow-wrap:anywhere}
 .word-entry{display:flex;gap:8px}
 .word-entry input{min-width:0;width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:10px 11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;outline:none}
 .word-entry input:focus,.final-input:focus{border-color:#d6a52d;box-shadow:0 0 0 3px #f6c45333}
@@ -76,6 +76,7 @@ h1{font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-1.5px;margin:
 .clue-reveal{border:1px solid #e0c36c;background:#fff8e5;color:#77560a;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:800}
 .word-clue{font-size:12px;margin:8px 0 0;line-height:1.4;color:#657287}
 .clue-status{margin-top:10px;font-size:12px;color:#657287;background:#f7f9fc;border-radius:9px;padding:9px 11px}
+.leader-row{display:flex;align-items:center;gap:12px;padding:11px 12px;border-bottom:1px solid var(--line)}.leader-rank{font-size:20px;font-weight:900;color:var(--navy);width:32px}.leader-name{font-weight:800;flex:1;min-width:0}.leader-points{font-weight:800;color:var(--navy);white-space:nowrap}.leader-you{margin-top:14px;background:#fff8e5;border:1px solid #ead28c;border-radius:13px;padding:13px}.leader-you-label{font-size:10px;letter-spacing:1px;font-weight:900;color:#805b0b;margin-bottom:6px}.leader-empty{padding:12px;background:#f7f9fc;border-radius:12px;color:var(--muted);font-size:13px}
 .cartoon-copy .clue-reveal{margin-top:10px}
 @media(max-width:620px){.dashboard-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.word-grid{grid-template-columns:1fr}.content{padding:15px}.panel-head{padding:14px 16px}.below{grid-template-columns:1fr}.scramble{font-size:22px}.cartoon{gap:10px}.cartoon-emoji{font-size:52px}}
@@ -92,7 +93,7 @@ h1{font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-1.5px;margin:
   <section class="intro">
     <div class="eyebrow">A little wit goes a long way</div>
     <h1>Ready to jumble your brain?</h1>
-    <p class="sub">Unscramble four words, collect the circled letters and solve the cartoon clue.</p>
+    <p class="sub">Unscramble four words, collect the shuffled letters and solve the final word.</p>
   </section>
   <section class="panel" id="playerDashboard" style="margin-bottom:16px">
     <div class="panel-head">
@@ -110,19 +111,16 @@ h1{font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-1.5px;margin:
     </div>
   </section>
   <section class="panel" id="leaderboardPanel" style="margin-bottom:16px">
-    <div class="panel-head"><div><div class="date-label">WordWit leaderboard</div><div class="small-muted">Top players by cumulative score points</div></div><div class="status">ALL-TIME</div></div>
+    <div class="panel-head"><div><div class="date-label">WordWit leaderboard</div><div class="small-muted">Top 2 champions · plus your own position</div></div><div class="status">ALL-TIME</div></div>
     <div class="content" id="leaderboardContent"><div class="small-muted">Loading leaderboard…</div></div>
   </section>
 
   <section class="panel" id="yesterdayPanel" style="display:none;margin-bottom:16px">
-    <div class="panel-head"><div><div class="date-label">Yesterday's complete solution</div><div class="small-muted" id="yesterdayDate"></div></div><div class="status">SOLUTION REVEALED</div></div>
+    <div class="panel-head"><div><div class="date-label">Yesterday's answers revealed</div><div class="small-muted" id="yesterdayDate"></div></div><div class="status">SOLUTION REVEALED</div></div>
     <div class="content">
-      <p class="small-muted" style="margin-top:0">Check each jumble against its correct word, then verify the circled letters and final phrase.</p>
+      <p class="small-muted" style="margin-top:0">Here are the four correct words and yesterday's final answer.</p>
+      <h3 style="color:var(--navy);margin:0 0 10px">The four correct words</h3>
       <div id="yesterdayWords" class="word-grid"></div>
-      <div class="collect" style="margin-top:16px">
-        <div class="collect-head"><strong>YESTERDAY'S CIRCLED LETTERS</strong><span class="small-muted" id="yesterdayLetterCount"></span></div>
-        <div class="letter-bank" id="yesterdayLetterBank"></div>
-      </div>
       <div class="solution-box show" id="yesterdayAnswer" style="margin-top:14px"></div>
     </div>
   </section>
@@ -133,7 +131,7 @@ h1{font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-1.5px;margin:
       <div class="status" id="puzzleStatus">DAILY CHALLENGE</div>
     </div>
     <div class="content">
-      <div class="instructions"><div class="bulb">💡</div><p><strong>How to play:</strong> Enter the correct word for each jumble. The circled letters will be revealed when you solve each word. Reveal optional clues if you need help; each revealed clue reduces your score by 5%. Rearrange all circled letters to answer the cartoon clue.</p></div>
+      <div class="instructions"><div class="bulb">💡</div><p><strong>How to play:</strong> Enter the correct word for each jumble. One circled letter from each solved word forms a final word. The letters are shuffled in the letter bank. Reveal optional clues if you need help; each revealed clue reduces your score by 5%.</p></div>
       <div class="word-grid" id="wordGrid"></div>
 
       <div class="clue-section">
@@ -148,7 +146,7 @@ h1{font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-1.5px;margin:
         </div>
         <div class="final-section">
           <div class="clue-status" id="cluePenaltyStatus">Clues revealed: 0 of 5 · Score deduction: 0%</div>
-          <label class="clue-title" for="finalAnswer">Enter your two- or three-word answer</label>
+          <label class="clue-title" for="finalAnswer">Enter the final word</label>
           <input class="final-input" id="finalAnswer" autocomplete="off" placeholder="TYPE YOUR ANSWER HERE" disabled>
           <div class="action-row">
             <button class="primary" id="submitFinal" disabled>Check my answer</button>
@@ -169,13 +167,14 @@ h1{font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-1.5px;margin:
       <input class="nickname" id="nickname" maxlength="60" placeholder="Your display name (required for leaderboard)" autocomplete="name">
     </div>
     <div class="info-card" id="subscriptionCard">
-      <h3>📬 WordWit updates subscription</h3>
-      <p>Optional: subscribe to receive WordWit news, new-game announcements and important alerts by email or WhatsApp. You may provide either or both.</p>
+      <h3>🎁 Join WordWit Rewards — Free Registration</h3>
+      <p><strong>Play. Earn. Unlock rewards.</strong> Register to build your WordWit player profile and be ready for ZenPoints rewards. The planned programme will let members accumulate points through daily play and achievements, then redeem them for selected digital and physical rewards. Rewards activation and redemption details will be announced to registered members.</p>
+      <p style="margin-top:8px">Enter your email or WhatsApp number (or both) to register your interest and receive your member updates. Registration is free; you can still play without registering.</p>
       <input class="nickname" id="subscriberEmail" type="email" maxlength="120" placeholder="Email address (optional)" autocomplete="email" style="margin-bottom:8px">
       <input class="nickname" id="subscriberWhatsApp" type="tel" maxlength="20" placeholder="WhatsApp number with country code (optional)" autocomplete="tel" style="margin-bottom:8px">
-      <label style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.45;margin:8px 0 12px"><input type="checkbox" id="subscriptionConsent" style="margin-top:2px"><span>I agree to receive WordWit news and alerts through the contact method(s) entered above. I understand that I can unsubscribe at any time.</span></label>
-      <div class="action-row"><button class="primary" type="button" id="subscribeButton">Subscribe</button><button class="secondary" type="button" id="unsubscribeButton">Unsubscribe</button></div>
-      <div class="small-muted" id="subscriptionStatus" aria-live="polite" style="margin-top:9px">Subscription is completely optional. Playing does not require registration.</div>
+      <label style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.45;margin:8px 0 12px"><input type="checkbox" id="subscriptionConsent" style="margin-top:2px"><span>I agree to receive WordWit membership, ZenPoints programme, reward and game updates through the contact method(s) entered above. I understand that I can unsubscribe at any time.</span></label>
+      <div class="action-row"><button class="primary" type="button" id="subscribeButton">Register free</button><button class="secondary" type="button" id="unsubscribeButton">Unsubscribe</button></div>
+      <div class="small-muted" id="subscriptionStatus" aria-live="polite" style="margin-top:9px">Free registration is optional. Registered members will receive updates about the ZenPoints rewards launch.</div>
     </div>
     <div class="info-card">
       <h3>📣 Challenge a friend</h3>
@@ -292,6 +291,1502 @@ const PUZZLES = [{
   cartoonClue: "A cheerful message encouraging a positive expression."
 }];
 
+const FUTURE_PUZZLES = [
+  {
+    "date": "2026-11-07",
+    "solutionDate": "2026-11-08",
+    "title": "Saturday · Cancer Awareness",
+    "finalAnswer": "CARE",
+    "cartoonEmoji": "🎗️",
+    "cartoonTitle": "Know the signs, seek support",
+    "cartoonClue": "A reminder about awareness, prevention, early detection and compassionate care.",
+    "words": [
+      {
+        "answer": "CANCER",
+        "clue": "A disease in which abnormal cells grow uncontrollably."
+      },
+      {
+        "answer": "AWARENESS",
+        "clue": "Knowledge that helps people recognise risks and seek help."
+      },
+      {
+        "answer": "RESEARCH",
+        "clue": "Careful study that advances prevention and treatment."
+      },
+      {
+        "answer": "EARLY",
+        "clue": "The stage when detection can make a vital difference."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-08",
+    "solutionDate": "2026-11-09",
+    "title": "Sunday · Diwali",
+    "finalAnswer": "LAMP",
+    "cartoonEmoji": "🪔",
+    "cartoonTitle": "A festival of light",
+    "cartoonClue": "A traditional light that symbolises hope and the triumph of light over darkness.",
+    "words": [
+      {
+        "answer": "LIGHT",
+        "clue": "What a flame or lamp gives."
+      },
+      {
+        "answer": "AARTI",
+        "clue": "A devotional ritual performed with a lit lamp."
+      },
+      {
+        "answer": "MITHAI",
+        "clue": "Traditional Indian festive sweets."
+      },
+      {
+        "answer": "PUJA",
+        "clue": "A Hindu act of worship."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-09",
+    "solutionDate": "2026-11-10",
+    "title": "Monday · Legal Services Day",
+    "finalAnswer": "LAWS",
+    "cartoonEmoji": "⚖️",
+    "cartoonTitle": "Justice and access for all",
+    "cartoonClue": "Rules that protect rights and help make justice accessible.",
+    "words": [
+      {
+        "answer": "LAWYER",
+        "clue": "A professional who advises or represents clients."
+      },
+      {
+        "answer": "ADVOCATE",
+        "clue": "A person who supports a cause or represents a client in court."
+      },
+      {
+        "answer": "WITNESS",
+        "clue": "A person who gives evidence about what they saw or know."
+      },
+      {
+        "answer": "STATUTE",
+        "clue": "A written law passed by a legislature."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-10",
+    "solutionDate": "2026-11-11",
+    "title": "Tuesday · World Science Day",
+    "finalAnswer": "ATOM",
+    "cartoonEmoji": "🔬",
+    "cartoonTitle": "Science for a better future",
+    "cartoonClue": "A tiny building block of matter and a starting point for scientific discovery.",
+    "words": [
+      {
+        "answer": "ATOM",
+        "clue": "The smallest unit of an element that retains its properties."
+      },
+      {
+        "answer": "THEORY",
+        "clue": "A well-supported explanation of observed facts."
+      },
+      {
+        "answer": "OBSERVE",
+        "clue": "To watch carefully and record what happens."
+      },
+      {
+        "answer": "METHOD",
+        "clue": "An organised way of carrying out an investigation."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-11",
+    "solutionDate": "2026-11-12",
+    "title": "Wednesday · National Education Day",
+    "finalAnswer": "BOOK",
+    "cartoonEmoji": "📚",
+    "cartoonTitle": "Learning opens doors",
+    "cartoonClue": "A familiar object that carries knowledge from one generation to another.",
+    "words": [
+      {
+        "answer": "BLACKBOARD",
+        "clue": "A classroom surface used by teachers for writing."
+      },
+      {
+        "answer": "OBJECTIVE",
+        "clue": "A learning goal or intended outcome."
+      },
+      {
+        "answer": "OUTCOME",
+        "clue": "The result of a learning process."
+      },
+      {
+        "answer": "KNOWLEDGE",
+        "clue": "Understanding gained through learning and experience."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-12",
+    "solutionDate": "2026-11-13",
+    "title": "Thursday · A Day to Discover",
+    "finalAnswer": "MIND",
+    "cartoonEmoji": "🧠",
+    "cartoonTitle": "Keep your curiosity alive",
+    "cartoonClue": "The human ability to think, imagine, learn and understand.",
+    "words": [
+      {
+        "answer": "MEMORY",
+        "clue": "The ability to retain and recall information."
+      },
+      {
+        "answer": "IDEA",
+        "clue": "A thought or suggestion."
+      },
+      {
+        "answer": "NOTICE",
+        "clue": "To observe or become aware of something."
+      },
+      {
+        "answer": "DISCOVER",
+        "clue": "To find something previously unknown."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-13",
+    "solutionDate": "2026-11-14",
+    "title": "Friday · World Kindness",
+    "finalAnswer": "CARE",
+    "cartoonEmoji": "💛",
+    "cartoonTitle": "Small acts matter",
+    "cartoonClue": "A simple value shown through empathy, helpfulness and consideration.",
+    "words": [
+      {
+        "answer": "COMPASSION",
+        "clue": "Concern for another person’s suffering."
+      },
+      {
+        "answer": "ASSIST",
+        "clue": "To help someone."
+      },
+      {
+        "answer": "RESPECT",
+        "clue": "Consideration for another person."
+      },
+      {
+        "answer": "EMPATHY",
+        "clue": "The ability to understand another person’s feelings."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-14",
+    "solutionDate": "2026-11-15",
+    "title": "Saturday · Children’s Day & World Diabetes Day",
+    "finalAnswer": "CARE",
+    "cartoonEmoji": "🧒",
+    "cartoonTitle": "Healthy childhood, brighter future",
+    "cartoonClue": "A day that brings together children’s wellbeing and awareness of diabetes.",
+    "words": [
+      {
+        "answer": "CHILD",
+        "clue": "A young person."
+      },
+      {
+        "answer": "AWARENESS",
+        "clue": "Understanding of an issue and its importance."
+      },
+      {
+        "answer": "RESILIENCE",
+        "clue": "The ability to recover and adapt."
+      },
+      {
+        "answer": "EDUCATION",
+        "clue": "Learning that helps people make informed choices."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-15",
+    "solutionDate": "2026-11-16",
+    "title": "Sunday · Chhath & Tribal Pride",
+    "finalAnswer": "RAYS",
+    "cartoonEmoji": "🌅",
+    "cartoonTitle": "Nature, gratitude and heritage",
+    "cartoonClue": "A celebration of the sun, nature, community and the rich heritage of tribal communities.",
+    "words": [
+      {
+        "answer": "RIVER",
+        "clue": "A natural flowing body of water."
+      },
+      {
+        "answer": "ARADHANA",
+        "clue": "A devotional act of worship."
+      },
+      {
+        "answer": "YOUTH",
+        "clue": "Young people, often central to preserving culture."
+      },
+      {
+        "answer": "SUNRISE",
+        "clue": "The moment the sun appears above the horizon."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-16",
+    "solutionDate": "2026-11-17",
+    "title": "Monday · Tolerance and Understanding",
+    "finalAnswer": "CALM",
+    "cartoonEmoji": "🕊️",
+    "cartoonTitle": "Different voices, shared humanity",
+    "cartoonClue": "Respectful understanding across differences helps communities live together.",
+    "words": [
+      {
+        "answer": "COMPASSION",
+        "clue": "Concern for another person’s suffering."
+      },
+      {
+        "answer": "ACCEPT",
+        "clue": "To receive or recognise without hostility."
+      },
+      {
+        "answer": "LISTEN",
+        "clue": "To give attention to sound or speech."
+      },
+      {
+        "answer": "MEDITATE",
+        "clue": "To focus the mind in quiet reflection."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-17",
+    "solutionDate": "2026-11-18",
+    "title": "Tuesday · International Students’ Day",
+    "finalAnswer": "TASK",
+    "cartoonEmoji": "🎓",
+    "cartoonTitle": "Celebrate the learner",
+    "cartoonClue": "The activity at the heart of student life and lifelong learning.",
+    "words": [
+      {
+        "answer": "TEACHER",
+        "clue": "A person who helps others learn."
+      },
+      {
+        "answer": "ASSIGNMENT",
+        "clue": "A task given to a student."
+      },
+      {
+        "answer": "SCHOOL",
+        "clue": "A place where students learn."
+      },
+      {
+        "answer": "KNOWLEDGE",
+        "clue": "Understanding gained through learning."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-18",
+    "solutionDate": "2026-11-19",
+    "title": "Wednesday · Everyday Innovation",
+    "finalAnswer": "IDEA",
+    "cartoonEmoji": "💡",
+    "cartoonTitle": "A thought can change everything",
+    "cartoonClue": "A new thought can become an invention, solution or useful improvement.",
+    "words": [
+      {
+        "answer": "IMAGINE",
+        "clue": "To form a picture or idea in the mind."
+      },
+      {
+        "answer": "DESIGN",
+        "clue": "A plan for making something."
+      },
+      {
+        "answer": "EXPERIMENT",
+        "clue": "A test carried out to learn what happens."
+      },
+      {
+        "answer": "ACHIEVE",
+        "clue": "To succeed in doing something."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-19",
+    "solutionDate": "2026-11-20",
+    "title": "Thursday · International Men’s Day",
+    "finalAnswer": "CARE",
+    "cartoonEmoji": "🤝",
+    "cartoonTitle": "Wellbeing, respect and responsibility",
+    "cartoonClue": "A reminder to value men’s health, positive role models and supportive relationships.",
+    "words": [
+      {
+        "answer": "COURAGE",
+        "clue": "The ability to face difficulty."
+      },
+      {
+        "answer": "AWARENESS",
+        "clue": "Knowledge of an issue."
+      },
+      {
+        "answer": "RESPECT",
+        "clue": "Treating others with consideration."
+      },
+      {
+        "answer": "EMOTION",
+        "clue": "A feeling such as joy, sadness or concern."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-20",
+    "solutionDate": "2026-11-21",
+    "title": "Friday · World Children’s Day",
+    "finalAnswer": "KIDS",
+    "cartoonEmoji": "🧸",
+    "cartoonTitle": "Every child deserves a future",
+    "cartoonClue": "Children’s rights, protection, development and opportunity.",
+    "words": [
+      {
+        "answer": "KINDNESS",
+        "clue": "Being friendly and considerate."
+      },
+      {
+        "answer": "INCLUSION",
+        "clue": "Making sure everyone can participate."
+      },
+      {
+        "answer": "DEVELOPMENT",
+        "clue": "Growth and progress."
+      },
+      {
+        "answer": "SAFETY",
+        "clue": "Protection from harm."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-21",
+    "solutionDate": "2026-11-22",
+    "title": "Saturday · World Television Day",
+    "finalAnswer": "NEWS",
+    "cartoonEmoji": "📺",
+    "cartoonTitle": "Stories that connect the world",
+    "cartoonClue": "Television carries news, information and stories across borders.",
+    "words": [
+      {
+        "answer": "NEWS",
+        "clue": "Reports about recent events."
+      },
+      {
+        "answer": "ENTERTAINMENT",
+        "clue": "Programs made to interest or amuse audiences."
+      },
+      {
+        "answer": "WIRELESS",
+        "clue": "Communication without physical cables."
+      },
+      {
+        "answer": "SCREEN",
+        "clue": "The surface on which television images appear."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-22",
+    "solutionDate": "2026-11-23",
+    "title": "Sunday · A Day for Reflection",
+    "finalAnswer": "CALM",
+    "cartoonEmoji": "🌿",
+    "cartoonTitle": "Pause and recharge",
+    "cartoonClue": "A quiet state of mind that helps restore balance.",
+    "words": [
+      {
+        "answer": "COMPOSE",
+        "clue": "To make or create; also to settle oneself."
+      },
+      {
+        "answer": "ATTENTION",
+        "clue": "Careful notice or focus."
+      },
+      {
+        "answer": "LISTEN",
+        "clue": "To give attention to sound or speech."
+      },
+      {
+        "answer": "MEDITATE",
+        "clue": "To focus the mind in quiet reflection."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-23",
+    "solutionDate": "2026-11-24",
+    "title": "Monday · Words and Language",
+    "finalAnswer": "TALK",
+    "cartoonEmoji": "🗣️",
+    "cartoonTitle": "Words bring people together",
+    "cartoonClue": "Language helps us share thoughts, stories and knowledge.",
+    "words": [
+      {
+        "answer": "TONGUE",
+        "clue": "A language or the organ used for speech."
+      },
+      {
+        "answer": "ARTICLE",
+        "clue": "A piece of writing."
+      },
+      {
+        "answer": "LETTER",
+        "clue": "A written character or message."
+      },
+      {
+        "answer": "KNOWLEDGE",
+        "clue": "Information and understanding."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-24",
+    "solutionDate": "2026-11-25",
+    "title": "Tuesday · Guru Nanak Jayanti",
+    "finalAnswer": "SEVA",
+    "cartoonEmoji": "🙏",
+    "cartoonTitle": "Equality, service and compassion",
+    "cartoonClue": "A day honouring Guru Nanak Dev Ji and values of service, equality and devotion.",
+    "words": [
+      {
+        "answer": "SANGAT",
+        "clue": "A Sikh congregation or community."
+      },
+      {
+        "answer": "EQUALITY",
+        "clue": "The principle that all people deserve equal dignity."
+      },
+      {
+        "answer": "VALUES",
+        "clue": "Principles that guide behaviour."
+      },
+      {
+        "answer": "ARDAAS",
+        "clue": "A Sikh prayer or supplication."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-25",
+    "solutionDate": "2026-11-26",
+    "title": "Wednesday · Elimination of Violence Against Women",
+    "finalAnswer": "SAFE",
+    "cartoonEmoji": "🧡",
+    "cartoonTitle": "Safety and dignity for every woman",
+    "cartoonClue": "A call to prevent violence and protect the safety, rights and dignity of women and girls.",
+    "words": [
+      {
+        "answer": "SUPPORT",
+        "clue": "Help given to someone."
+      },
+      {
+        "answer": "AWARENESS",
+        "clue": "Understanding that helps identify and prevent harm."
+      },
+      {
+        "answer": "FREEDOM",
+        "clue": "The state of being free."
+      },
+      {
+        "answer": "EMPOWER",
+        "clue": "To give someone confidence or authority."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-26",
+    "solutionDate": "2026-11-27",
+    "title": "Thursday · Constitution Day & National Milk Day",
+    "finalAnswer": "LAWS",
+    "cartoonEmoji": "📜",
+    "cartoonTitle": "Rights, duties and nourishment",
+    "cartoonClue": "India’s Constitution and the importance of nutrition both shape a healthy society.",
+    "words": [
+      {
+        "answer": "LIBERTY",
+        "clue": "Freedom protected as a constitutional value."
+      },
+      {
+        "answer": "ARTICLE",
+        "clue": "A numbered provision in a constitution."
+      },
+      {
+        "answer": "WELFARE",
+        "clue": "Health, happiness and wellbeing."
+      },
+      {
+        "answer": "SUPREME",
+        "clue": "Highest in authority or rank."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-27",
+    "solutionDate": "2026-11-28",
+    "title": "Friday · Everyday Creativity",
+    "finalAnswer": "ARTS",
+    "cartoonEmoji": "🎨",
+    "cartoonTitle": "Make something original",
+    "cartoonClue": "Creative expression through images, sound, movement and ideas.",
+    "words": [
+      {
+        "answer": "ARTIST",
+        "clue": "A person who creates art."
+      },
+      {
+        "answer": "RHYTHM",
+        "clue": "A repeated pattern of sound or movement."
+      },
+      {
+        "answer": "THEATRE",
+        "clue": "A place or art form for live performance."
+      },
+      {
+        "answer": "SKETCH",
+        "clue": "A quick drawing."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-28",
+    "solutionDate": "2026-11-29",
+    "title": "Saturday · Nature Watch",
+    "finalAnswer": "BIRD",
+    "cartoonEmoji": "🐦",
+    "cartoonTitle": "Look closer at the natural world",
+    "cartoonClue": "A feathered creature that reminds us to protect habitats and biodiversity.",
+    "words": [
+      {
+        "answer": "BLOSSOM",
+        "clue": "A flower or the act of flowering."
+      },
+      {
+        "answer": "INSECT",
+        "clue": "A small animal with six legs."
+      },
+      {
+        "answer": "RIVER",
+        "clue": "A natural waterway."
+      },
+      {
+        "answer": "DIVERSITY",
+        "clue": "A variety of different forms or kinds."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-29",
+    "solutionDate": "2026-11-30",
+    "title": "Sunday · First Sunday of Advent",
+    "finalAnswer": "GIVE",
+    "cartoonEmoji": "🎁",
+    "cartoonTitle": "Generosity makes a difference",
+    "cartoonClue": "The first Sunday of Advent begins a season of preparation, hope and generosity in many Christian traditions.",
+    "words": [
+      {
+        "answer": "GENEROSITY",
+        "clue": "Willingness to give or share."
+      },
+      {
+        "answer": "INVITE",
+        "clue": "To ask someone to join."
+      },
+      {
+        "answer": "VOLUNTEER",
+        "clue": "A person who freely offers help."
+      },
+      {
+        "answer": "ENCOURAGE",
+        "clue": "To give support or confidence."
+      }
+    ]
+  },
+  {
+    "date": "2026-11-30",
+    "solutionDate": "2026-12-01",
+    "title": "Monday · Finish the Month Strong",
+    "finalAnswer": "GROW",
+    "cartoonEmoji": "🌱",
+    "cartoonTitle": "Every day is a chance to grow",
+    "cartoonClue": "Small steps and steady effort create progress over time.",
+    "words": [
+      {
+        "answer": "GARDEN",
+        "clue": "A place where plants are grown."
+      },
+      {
+        "answer": "REFLECT",
+        "clue": "To think carefully about something."
+      },
+      {
+        "answer": "OPPORTUNITY",
+        "clue": "A favourable chance."
+      },
+      {
+        "answer": "WISDOM",
+        "clue": "Good judgement gained through experience."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-01",
+    "solutionDate": "2026-12-02",
+    "title": "Tuesday · World AIDS Day",
+    "finalAnswer": "SAFE",
+    "cartoonEmoji": "❤️",
+    "cartoonTitle": "Awareness, support and solidarity",
+    "cartoonClue": "A global day for HIV awareness, remembrance and support without stigma.",
+    "words": [
+      {
+        "answer": "SUPPORT",
+        "clue": "Help and encouragement."
+      },
+      {
+        "answer": "AWARENESS",
+        "clue": "Knowledge about HIV prevention and care."
+      },
+      {
+        "answer": "FACTS",
+        "clue": "Information that can be verified."
+      },
+      {
+        "answer": "EDUCATION",
+        "clue": "Learning that helps prevent misinformation."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-02",
+    "solutionDate": "2026-12-03",
+    "title": "Wednesday · Pollution Control Day",
+    "finalAnswer": "PURE",
+    "cartoonEmoji": "🌍",
+    "cartoonTitle": "Protect the air, land and water",
+    "cartoonClue": "Reducing pollution helps protect people, wildlife and the environment.",
+    "words": [
+      {
+        "answer": "PREVENT",
+        "clue": "To stop something from happening."
+      },
+      {
+        "answer": "USE",
+        "clue": "To put something into action."
+      },
+      {
+        "answer": "RECYCLE",
+        "clue": "To process waste so it can be used again."
+      },
+      {
+        "answer": "EARTH",
+        "clue": "The planet on which we live."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-03",
+    "solutionDate": "2026-12-04",
+    "title": "Thursday · International Day of Persons with Disabilities",
+    "finalAnswer": "CARE",
+    "cartoonEmoji": "♿",
+    "cartoonTitle": "Accessibility benefits everyone",
+    "cartoonClue": "Promoting dignity, inclusion, accessibility and equal participation.",
+    "words": [
+      {
+        "answer": "COMMUNITY",
+        "clue": "People living or working together."
+      },
+      {
+        "answer": "ACCESS",
+        "clue": "The ability or right to enter or use."
+      },
+      {
+        "answer": "RESPECT",
+        "clue": "Treating people with dignity."
+      },
+      {
+        "answer": "EQUALITY",
+        "clue": "Equal rights and opportunities."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-04",
+    "solutionDate": "2026-12-05",
+    "title": "Friday · Indian Navy Day & Hanukkah Begins at Sunset",
+    "finalAnswer": "SHIP",
+    "cartoonEmoji": "⚓",
+    "cartoonTitle": "Guardians of the seas",
+    "cartoonClue": "A tribute to the Indian Navy; Hanukkah also begins at sunset on this date in 2026.",
+    "words": [
+      {
+        "answer": "SAILOR",
+        "clue": "A person who works aboard a ship."
+      },
+      {
+        "answer": "HARBOR",
+        "clue": "A sheltered place for ships."
+      },
+      {
+        "answer": "INDIAN",
+        "clue": "Relating to India."
+      },
+      {
+        "answer": "PATROL",
+        "clue": "A watch or route undertaken for security."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-05",
+    "solutionDate": "2026-12-06",
+    "title": "Saturday · World Soil Day, Volunteer Day & Hanukkah",
+    "finalAnswer": "SOIL",
+    "cartoonEmoji": "🌱",
+    "cartoonTitle": "Healthy soil, helpful hands",
+    "cartoonClue": "Soil sustains food systems and volunteers strengthen communities; Hanukkah continues during this period.",
+    "words": [
+      {
+        "answer": "SOIL",
+        "clue": "The upper layer of earth where plants grow."
+      },
+      {
+        "answer": "ORGANIC",
+        "clue": "Relating to living matter or carbon compounds."
+      },
+      {
+        "answer": "INVEST",
+        "clue": "To put effort or resources into something."
+      },
+      {
+        "answer": "LIFELINE",
+        "clue": "Something essential for survival or support."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-06",
+    "solutionDate": "2026-12-07",
+    "title": "Sunday · A Day to Remember",
+    "finalAnswer": "HOPE",
+    "cartoonEmoji": "🕯️",
+    "cartoonTitle": "Remember, learn and build better",
+    "cartoonClue": "A quiet prompt to reflect on history and work towards a more compassionate future.",
+    "words": [
+      {
+        "answer": "HISTORY",
+        "clue": "The study of past events."
+      },
+      {
+        "answer": "OBSERVE",
+        "clue": "To watch or notice carefully."
+      },
+      {
+        "answer": "PEOPLE",
+        "clue": "Human beings as a group."
+      },
+      {
+        "answer": "EMPATHY",
+        "clue": "Understanding another person’s feelings."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-07",
+    "solutionDate": "2026-12-08",
+    "title": "Monday · Armed Forces Flag Day",
+    "finalAnswer": "FLAG",
+    "cartoonEmoji": "🇮🇳",
+    "cartoonTitle": "Honour service and sacrifice",
+    "cartoonClue": "A day to remember the service of armed forces personnel and support veterans and families.",
+    "words": [
+      {
+        "answer": "FORCE",
+        "clue": "Strength or a military service."
+      },
+      {
+        "answer": "LOYALTY",
+        "clue": "Faithfulness to a person or cause."
+      },
+      {
+        "answer": "ARMY",
+        "clue": "A country’s land-based military force."
+      },
+      {
+        "answer": "GRATITUDE",
+        "clue": "Thankfulness for help or service."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-08",
+    "solutionDate": "2026-12-09",
+    "title": "Tuesday · Bodhi Day",
+    "finalAnswer": "MIND",
+    "cartoonEmoji": "🧩",
+    "cartoonTitle": "Challenge your thinking",
+    "cartoonClue": "Bodhi Day commemorates the Buddha’s enlightenment; the theme is reflection, insight and mindful understanding.",
+    "words": [
+      {
+        "answer": "MEMORY",
+        "clue": "The ability to recall information."
+      },
+      {
+        "answer": "INSIGHT",
+        "clue": "A clear understanding."
+      },
+      {
+        "answer": "NOTICE",
+        "clue": "To become aware of something."
+      },
+      {
+        "answer": "DEDUCE",
+        "clue": "To reach a conclusion from evidence."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-09",
+    "solutionDate": "2026-12-10",
+    "title": "Wednesday · International Anti-Corruption Day",
+    "finalAnswer": "FAIR",
+    "cartoonEmoji": "⚖️",
+    "cartoonTitle": "Integrity builds trust",
+    "cartoonClue": "Fairness, transparency and accountability help protect public trust.",
+    "words": [
+      {
+        "answer": "FAIRNESS",
+        "clue": "Treating people impartially."
+      },
+      {
+        "answer": "ACCOUNTABLE",
+        "clue": "Responsible for actions and decisions."
+      },
+      {
+        "answer": "INTEGRITY",
+        "clue": "Honesty and strong moral principles."
+      },
+      {
+        "answer": "RULES",
+        "clue": "Standards that guide conduct."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-10",
+    "solutionDate": "2026-12-11",
+    "title": "Thursday · Human Rights Day",
+    "finalAnswer": "DIGN",
+    "cartoonEmoji": "🕊️",
+    "cartoonTitle": "Dignity belongs to everyone",
+    "cartoonClue": "Human rights belong to every person, without discrimination.",
+    "words": [
+      {
+        "answer": "DIGNITY",
+        "clue": "The state of being worthy of respect."
+      },
+      {
+        "answer": "INCLUSION",
+        "clue": "Ensuring everyone can participate."
+      },
+      {
+        "answer": "GROWTH",
+        "clue": "Development or progress."
+      },
+      {
+        "answer": "NATURE",
+        "clue": "The basic character of something; also the natural world."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-11",
+    "solutionDate": "2026-12-12",
+    "title": "Friday · International Mountain Day",
+    "finalAnswer": "PEAK",
+    "cartoonEmoji": "🏔️",
+    "cartoonTitle": "Protect the mountain world",
+    "cartoonClue": "Mountains support biodiversity, communities and vital water sources.",
+    "words": [
+      {
+        "answer": "PEAK",
+        "clue": "The pointed top of a mountain."
+      },
+      {
+        "answer": "ELEVATION",
+        "clue": "Height above a reference level."
+      },
+      {
+        "answer": "ALPINE",
+        "clue": "Relating to high mountains."
+      },
+      {
+        "answer": "KNOLL",
+        "clue": "A small rounded hill."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-12",
+    "solutionDate": "2026-12-13",
+    "title": "Saturday · Hanukkah’s Final Day & Wellbeing",
+    "finalAnswer": "HEAL",
+    "cartoonEmoji": "🩺",
+    "cartoonTitle": "Health is a daily practice",
+    "cartoonClue": "Hanukkah concludes around this date; healthy habits and support also help people thrive.",
+    "words": [
+      {
+        "answer": "HEALTH",
+        "clue": "The condition of body and mind."
+      },
+      {
+        "answer": "EXERCISE",
+        "clue": "Physical activity for fitness."
+      },
+      {
+        "answer": "ATTEND",
+        "clue": "To be present or take care of."
+      },
+      {
+        "answer": "LIFESTYLE",
+        "clue": "A way of living."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-13",
+    "solutionDate": "2026-12-14",
+    "title": "Sunday · A Day to Explore",
+    "finalAnswer": "MAPS",
+    "cartoonEmoji": "🗺️",
+    "cartoonTitle": "Every journey starts somewhere",
+    "cartoonClue": "Maps help us find our way and discover new places.",
+    "words": [
+      {
+        "answer": "MILE",
+        "clue": "A unit of distance."
+      },
+      {
+        "answer": "ADVENTURE",
+        "clue": "An exciting or unusual experience."
+      },
+      {
+        "answer": "PATH",
+        "clue": "A way or route."
+      },
+      {
+        "answer": "SCENERY",
+        "clue": "The natural features of a landscape."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-14",
+    "solutionDate": "2026-12-15",
+    "title": "Monday · National Energy Conservation Day",
+    "finalAnswer": "SAVE",
+    "cartoonEmoji": "💡",
+    "cartoonTitle": "Use energy wisely",
+    "cartoonClue": "Saving energy reduces waste and supports a more sustainable future.",
+    "words": [
+      {
+        "answer": "SWITCH",
+        "clue": "A device for turning something on or off."
+      },
+      {
+        "answer": "ALTERNATE",
+        "clue": "A substitute or different option."
+      },
+      {
+        "answer": "VOLTAGE",
+        "clue": "Electrical potential difference."
+      },
+      {
+        "answer": "EFFICIENCY",
+        "clue": "Achieving results with minimal waste."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-15",
+    "solutionDate": "2026-12-16",
+    "title": "Tuesday · A Regular WordWit Challenge",
+    "finalAnswer": "PLAY",
+    "cartoonEmoji": "🎲",
+    "cartoonTitle": "A little challenge for your day",
+    "cartoonClue": "No special observance is assigned to this date in the calendar checked; enjoy a regular daily puzzle.",
+    "words": [
+      {
+        "answer": "PUZZLE",
+        "clue": "A problem designed to test ingenuity."
+      },
+      {
+        "answer": "LEARN",
+        "clue": "To gain knowledge or skill."
+      },
+      {
+        "answer": "ANSWER",
+        "clue": "A response to a question."
+      },
+      {
+        "answer": "YOUNG",
+        "clue": "Being in an early stage of life."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-16",
+    "solutionDate": "2026-12-17",
+    "title": "Wednesday · Vijay Diwas",
+    "finalAnswer": "HERO",
+    "cartoonEmoji": "🇮🇳",
+    "cartoonTitle": "Remember courage and sacrifice",
+    "cartoonClue": "Vijay Diwas commemorates India’s victory in the 1971 war and honours those who served.",
+    "words": [
+      {
+        "answer": "HONOUR",
+        "clue": "High respect or esteem."
+      },
+      {
+        "answer": "EXAMPLE",
+        "clue": "A person or thing worthy of imitation."
+      },
+      {
+        "answer": "RESOLVE",
+        "clue": "Firm determination."
+      },
+      {
+        "answer": "OPERATE",
+        "clue": "To carry out a military or other operation."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-17",
+    "solutionDate": "2026-12-18",
+    "title": "Thursday · A Regular WordWit Challenge",
+    "finalAnswer": "WORD",
+    "cartoonEmoji": "🔤",
+    "cartoonTitle": "Words make the world interesting",
+    "cartoonClue": "No special observance is assigned to this date in the calendar checked; today is all about words.",
+    "words": [
+      {
+        "answer": "WONDER",
+        "clue": "A feeling of curiosity or amazement."
+      },
+      {
+        "answer": "OBSERVE",
+        "clue": "To watch carefully."
+      },
+      {
+        "answer": "READ",
+        "clue": "To understand written words."
+      },
+      {
+        "answer": "DISCOVER",
+        "clue": "To find something new."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-18",
+    "solutionDate": "2026-12-19",
+    "title": "Friday · Minorities Rights & International Migrants Day",
+    "finalAnswer": "HOME",
+    "cartoonEmoji": "🏡",
+    "cartoonTitle": "Belonging, dignity and opportunity",
+    "cartoonClue": "A reminder to respect minority rights and recognise the contributions and experiences of migrants.",
+    "words": [
+      {
+        "answer": "HUMANITY",
+        "clue": "The human race or quality of being compassionate."
+      },
+      {
+        "answer": "OPPORTUNITY",
+        "clue": "A favourable chance."
+      },
+      {
+        "answer": "MIGRANT",
+        "clue": "A person who moves to another place."
+      },
+      {
+        "answer": "EQUALITY",
+        "clue": "The state of having equal rights."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-19",
+    "solutionDate": "2026-12-20",
+    "title": "Saturday · Goa Liberation Day",
+    "finalAnswer": "GOAN",
+    "cartoonEmoji": "🏖️",
+    "cartoonTitle": "Remember Goa’s history",
+    "cartoonClue": "Goa Liberation Day marks the end of Portuguese rule in Goa in 1961.",
+    "words": [
+      {
+        "answer": "GOA",
+        "clue": "A state on India’s western coast."
+      },
+      {
+        "answer": "OCEAN",
+        "clue": "A vast body of salt water."
+      },
+      {
+        "answer": "ARCHIVE",
+        "clue": "A collection of historical records."
+      },
+      {
+        "answer": "NATION",
+        "clue": "A country or people."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-20",
+    "solutionDate": "2026-12-21",
+    "title": "Sunday · International Human Solidarity Day",
+    "finalAnswer": "UNIT",
+    "cartoonEmoji": "🤝",
+    "cartoonTitle": "Stronger when we stand together",
+    "cartoonClue": "Solidarity reminds us that cooperation and shared responsibility can address common challenges.",
+    "words": [
+      {
+        "answer": "UNITY",
+        "clue": "The state of being joined together."
+      },
+      {
+        "answer": "NEIGHBOUR",
+        "clue": "A person living nearby."
+      },
+      {
+        "answer": "INCLUDE",
+        "clue": "To make someone part of a group."
+      },
+      {
+        "answer": "TEAM",
+        "clue": "People working together."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-21",
+    "solutionDate": "2026-12-22",
+    "title": "Monday · Yule / Winter Solstice Season",
+    "finalAnswer": "STAR",
+    "cartoonEmoji": "⭐",
+    "cartoonTitle": "Find your spark",
+    "cartoonClue": "Yule is observed around the winter solstice; this puzzle celebrates light, renewal and inspiration.",
+    "words": [
+      {
+        "answer": "SPARK",
+        "clue": "A tiny flash of light or an inspiring idea."
+      },
+      {
+        "answer": "TRAIL",
+        "clue": "A path or track."
+      },
+      {
+        "answer": "ACHIEVE",
+        "clue": "To accomplish something."
+      },
+      {
+        "answer": "RISE",
+        "clue": "To move upwards."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-22",
+    "solutionDate": "2026-12-23",
+    "title": "Tuesday · National Mathematics Day",
+    "finalAnswer": "MATH",
+    "cartoonEmoji": "➗",
+    "cartoonTitle": "Celebrate the beauty of numbers and the winter solstice",
+    "cartoonClue": "India observes National Mathematics Day on the birth anniversary of Srinivasa Ramanujan; the December solstice also falls around this date.",
+    "words": [
+      {
+        "answer": "MULTIPLY",
+        "clue": "To increase by repeated addition."
+      },
+      {
+        "answer": "ADD",
+        "clue": "To combine numbers."
+      },
+      {
+        "answer": "THEOREM",
+        "clue": "A statement proved through reasoning."
+      },
+      {
+        "answer": "HYPOTHESIS",
+        "clue": "A proposed explanation to be tested."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-23",
+    "solutionDate": "2026-12-24",
+    "title": "Wednesday · Kisan Diwas / Farmers’ Day",
+    "finalAnswer": "FARM",
+    "cartoonEmoji": "🚜",
+    "cartoonTitle": "Salute the hands that feed us",
+    "cartoonClue": "Farmers’ Day recognises the contribution of farmers and agriculture to the nation.",
+    "words": [
+      {
+        "answer": "FIELD",
+        "clue": "An area of land used for crops."
+      },
+      {
+        "answer": "AGRICULTURE",
+        "clue": "The practice of farming."
+      },
+      {
+        "answer": "RICE",
+        "clue": "A major staple grain."
+      },
+      {
+        "answer": "MARKET",
+        "clue": "A place where goods are bought and sold."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-24",
+    "solutionDate": "2026-12-25",
+    "title": "Thursday · National Consumer Day",
+    "finalAnswer": "FAIR",
+    "cartoonEmoji": "🛍️",
+    "cartoonTitle": "Know your rights as a consumer",
+    "cartoonClue": "Consumer awareness encourages informed choices, fair trade and responsible business.",
+    "words": [
+      {
+        "answer": "FAIR",
+        "clue": "Just and reasonable."
+      },
+      {
+        "answer": "AWARENESS",
+        "clue": "Knowledge about a subject."
+      },
+      {
+        "answer": "INVOICE",
+        "clue": "A bill for goods or services."
+      },
+      {
+        "answer": "REFUND",
+        "clue": "Money returned after a purchase."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-25",
+    "solutionDate": "2026-12-26",
+    "title": "Friday · Christmas Day",
+    "finalAnswer": "NOEL",
+    "cartoonEmoji": "🎄",
+    "cartoonTitle": "A season of hope and giving",
+    "cartoonClue": "Christmas celebrates the birth of Jesus Christ for Christians around the world.",
+    "words": [
+      {
+        "answer": "NORTH",
+        "clue": "The direction associated with the North Pole and Santa stories."
+      },
+      {
+        "answer": "ORNAMENT",
+        "clue": "A decorative item hung on a Christmas tree."
+      },
+      {
+        "answer": "EVERGREEN",
+        "clue": "A tree that keeps its leaves throughout the year."
+      },
+      {
+        "answer": "LIGHTS",
+        "clue": "Decorative illuminations used during Christmas."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-26",
+    "solutionDate": "2026-12-27",
+    "title": "Saturday · Kwanzaa Begins",
+    "finalAnswer": "UNIT",
+    "cartoonEmoji": "🕯️",
+    "cartoonTitle": "Celebrate community and heritage",
+    "cartoonClue": "Kwanzaa begins on December 26 and celebrates African heritage, family and community.",
+    "words": [
+      {
+        "answer": "UNITY",
+        "clue": "The state of being joined together."
+      },
+      {
+        "answer": "NEIGHBOUR",
+        "clue": "A person living nearby."
+      },
+      {
+        "answer": "INHERITANCE",
+        "clue": "Something passed down from earlier generations."
+      },
+      {
+        "answer": "TOGETHER",
+        "clue": "With or in the company of others."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-27",
+    "solutionDate": "2026-12-28",
+    "title": "Sunday · A Day for Family",
+    "finalAnswer": "HOME",
+    "cartoonEmoji": "🏠",
+    "cartoonTitle": "Make time for one another",
+    "cartoonClue": "A simple reminder to share time, care and conversation with loved ones.",
+    "words": [
+      {
+        "answer": "HUG",
+        "clue": "A close embrace."
+      },
+      {
+        "answer": "OPEN",
+        "clue": "Ready to welcome or receive."
+      },
+      {
+        "answer": "MEMORY",
+        "clue": "A recollection of the past."
+      },
+      {
+        "answer": "ENJOY",
+        "clue": "To take pleasure in something."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-28",
+    "solutionDate": "2026-12-29",
+    "title": "Monday · A Day to Reflect",
+    "finalAnswer": "GROW",
+    "cartoonEmoji": "🌿",
+    "cartoonTitle": "Look back, then move forward",
+    "cartoonClue": "Reflection helps turn experience into learning and progress.",
+    "words": [
+      {
+        "answer": "GOAL",
+        "clue": "An aim or desired result."
+      },
+      {
+        "answer": "REVIEW",
+        "clue": "To look back over something."
+      },
+      {
+        "answer": "OPPORTUNITY",
+        "clue": "A favourable chance."
+      },
+      {
+        "answer": "WISDOM",
+        "clue": "Good judgement."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-29",
+    "solutionDate": "2026-12-30",
+    "title": "Tuesday · A Day to Create",
+    "finalAnswer": "MAKE",
+    "cartoonEmoji": "🛠️",
+    "cartoonTitle": "Turn ideas into action",
+    "cartoonClue": "Creativity turns imagination into something useful or beautiful.",
+    "words": [
+      {
+        "answer": "MATERIAL",
+        "clue": "What something is made from."
+      },
+      {
+        "answer": "ART",
+        "clue": "Creative expression."
+      },
+      {
+        "answer": "KNOWHOW",
+        "clue": "Practical knowledge or skill."
+      },
+      {
+        "answer": "EXPERIMENT",
+        "clue": "A test or trial."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-30",
+    "solutionDate": "2026-12-31",
+    "title": "Wednesday · Year-End Reflection",
+    "finalAnswer": "PLAN",
+    "cartoonEmoji": "✨",
+    "cartoonTitle": "Prepare for a fresh beginning",
+    "cartoonClue": "A moment to reflect on the year and prepare for what comes next.",
+    "words": [
+      {
+        "answer": "PREPARE",
+        "clue": "To get ready for something."
+      },
+      {
+        "answer": "LEARN",
+        "clue": "To gain knowledge or skill."
+      },
+      {
+        "answer": "AIM",
+        "clue": "A goal or intention."
+      },
+      {
+        "answer": "NEW",
+        "clue": "Recently made or discovered."
+      }
+    ]
+  },
+  {
+    "date": "2026-12-31",
+    "solutionDate": "2027-01-01",
+    "title": "Thursday · New Year’s Eve",
+    "finalAnswer": "HOPE",
+    "cartoonEmoji": "🎆",
+    "cartoonTitle": "Welcome the year ahead",
+    "cartoonClue": "A time to reflect on the year gone by and welcome new possibilities.",
+    "words": [
+      {
+        "answer": "HORIZON",
+        "clue": "The apparent line where earth and sky meet."
+      },
+      {
+        "answer": "OPPORTUNITY",
+        "clue": "A favourable chance."
+      },
+      {
+        "answer": "PROMISE",
+        "clue": "A commitment or sign of future possibility."
+      },
+      {
+        "answer": "EXPECTATION",
+        "clue": "A belief about what may happen."
+      }
+    ]
+  }
+];
+function makePuzzleScramble(word, date, index){
+  const chars=word.split(""); let seed=0;
+  for(const ch of date+String(index)+word) seed=(seed*31+ch.charCodeAt(0))>>>0;
+  for(let i=chars.length-1;i>0;i--){ seed=(seed*1664525+1013904223)>>>0; const j=seed%(i+1); [chars[i],chars[j]]=[chars[j],chars[i]]; }
+  if(chars.join("")===word && chars.length>1) [chars[0],chars[1]]=[chars[1],chars[0]];
+  return chars.join("");
+}
+FUTURE_PUZZLES.forEach(p=>{ p.words=p.words.map((w,i)=>({scramble:makePuzzleScramble(w.answer,p.date,i),answer:w.answer,circled:[1],clue:w.clue})); });
+
 // Paste your deployed Google Apps Script Web App URL here after deployment.
 const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby-Hp5WSGKVe0kWBiAKl0RiaMXe39Fl_j4LlAnOIKm9jXgH5iIYl1HySD-OjwwbFPI/exec";
 
@@ -308,7 +1803,7 @@ const wordwitDate = () => {
   return effective.toISOString().slice(0,10);
 };
 const todayISO = wordwitDate;
-const orderedPuzzles = [...PUZZLES].sort((a,b)=>a.date.localeCompare(b.date));
+const orderedPuzzles = [...PUZZLES, ...FUTURE_PUZZLES].sort((a,b)=>a.date.localeCompare(b.date));
 const activePuzzle = orderedPuzzles.filter(p=>p.date<=todayISO()).slice(-1)[0] || orderedPuzzles[0];
 const previousPuzzle = orderedPuzzles.filter(p=>p.date<activePuzzle.date && p.solutionDate<=todayISO()).slice(-1)[0] || null;
 const solved = new Set();
@@ -367,14 +1862,10 @@ function render(){
   if(previousPuzzle){
     $("yesterdayPanel").style.display="block";
     $("yesterdayDate").textContent=displayDate(previousPuzzle.date);
-    $("yesterdayWords").innerHTML=previousPuzzle.words.map((w,i)=>{
-      const tiles=w.answer.split("").map((ch,index)=>`<span class="letter-tile ${w.circled.includes(index+1)?"circled":""}">${ch}</span>`).join("");
-      return `<div class="word-card solved"><div class="word-top"><span class="word-number">WORD ${i+1}</span><span class="word-length">${w.answer.length} LETTERS</span></div><div class="small-muted">Jumble: <strong>${w.scramble}</strong></div><div class="small-muted">Clue: ${w.clue || ""}</div><div class="scramble" style="letter-spacing:3px">${w.answer}</div><div class="small-muted">Correct word and circled letters:</div><div class="solved-letters">${tiles}</div></div>`;
-    }).join("");
-    const prevLetters=previousPuzzle.words.flatMap(w=>w.circled.map(pos=>w.answer[pos-1]));
-    $("yesterdayLetterBank").innerHTML=prevLetters.map(ch=>`<span class="bank-tile">${ch}</span>`).join("");
-    $("yesterdayLetterCount").textContent=prevLetters.length+" letters";
-    $("yesterdayAnswer").innerHTML=`<strong>Final answer: ${previousPuzzle.finalAnswer}</strong><br><span class="small-muted">The circled letters rearrange to form this answer (${norm(previousPuzzle.finalAnswer).length} letters, excluding spaces).</span>`;
+    $("yesterdayWords").innerHTML=previousPuzzle.words.map((w,i)=>
+      `<div class="word-card"><div class="word-top"><span class="word-number">WORD ${i+1}</span><span class="word-length">${w.answer.length} LETTERS</span></div><div class="scramble" style="letter-spacing:3px;margin:4px 0">${w.answer}</div></div>`
+    ).join("");
+    $("yesterdayAnswer").innerHTML=`<div class="small-muted" style="font-weight:800;letter-spacing:1px;margin-bottom:5px">YESTERDAY'S FINAL ANSWER</div><strong style="font-size:22px;color:var(--navy)">${previousPuzzle.finalAnswer}</strong>`;
   }
   $("puzzleDate").textContent=activePuzzle.title+" · "+displayDate(activePuzzle.date);
   $("cartoonEmoji").textContent=activePuzzle.cartoonEmoji;
@@ -386,7 +1877,7 @@ function render(){
     card.innerHTML=`<div class="word-top"><span class="word-number">WORD ${i+1}</span><span class="word-length">${w.answer.length} LETTERS</span></div>
       <div class="scramble">${w.scramble}</div>
       <div class="clue-control"><button class="clue-reveal" id="clueBtn${i}" type="button">Reveal clue (−5%)</button><div class="word-clue" id="clueText${i}" hidden>💡 ${w.clue || "Unscramble the letters."}</div></div>
-      <div class="word-entry"><input id="entry${i}" maxlength="6" placeholder="Your answer" aria-label="Answer for word ${i+1}" autocomplete="off"><button class="check-word" id="check${i}">CHECK</button></div>
+      <div class="word-entry"><input id="entry${i}" maxlength="16" placeholder="Your answer" aria-label="Answer for word ${i+1}" autocomplete="off"><button class="check-word" id="check${i}">CHECK</button></div>
       <div class="word-feedback" id="feedback${i}" aria-live="polite">Unscramble this word.</div><div class="solved-letters" id="tiles${i}"></div>`;
     $("wordGrid").appendChild(card);
     $("check"+i).addEventListener("click",()=>checkWord(i));
@@ -447,8 +1938,20 @@ function checkWord(i){
 function collectedLetters(){
   return activePuzzle.words.flatMap((w,i)=>solved.has(i)?w.circled.map(pos=>w.answer[pos-1]):[]);
 }
+function shuffledFinalLetters(letters){
+  // A puzzle-specific deterministic shuffle: the letter order stays mixed and stable during play.
+  const arr=[...letters];
+  let seed=0;
+  for(const ch of activePuzzle.date) seed=(seed*31+ch.charCodeAt(0))>>>0;
+  for(let i=arr.length-1;i>0;i--){
+    seed=(seed*1664525+1013904223)>>>0;
+    const j=seed%(i+1);
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
 function updateBank(){
-  const letters=collectedLetters(),total=activePuzzle.words.reduce((n,w)=>n+w.circled.length,0);
+  const letters=shuffledFinalLetters(collectedLetters()),total=activePuzzle.words.reduce((n,w)=>n+w.circled.length,0);
   $("letterBank").innerHTML="";
   for(let i=0;i<total;i++){
     const el=document.createElement("span");el.className="bank-tile"+(letters[i]?"":" empty");el.textContent=letters[i]||"·";$("letterBank").appendChild(el);
@@ -541,10 +2044,20 @@ function loadPlayerStats(){
       $("gamesCompleted").textContent=Number(data.player?.gamesCompleted||0).toLocaleString("en-IN");
       $("personalBest").textContent=data.player?.personalBest==null?"—":Number(data.player.personalBest).toLocaleString("en-IN");
       const list=data.leaderboard||[];
-      $("leaderboardContent").innerHTML=list.length
-        ? "<ol style='margin:0;padding-left:22px'>"+list.map(x=>"<li style='padding:5px 0'><strong>"+escapeHtml(x.playerName)+"</strong> <span class='small-muted'>— "+Number(x.totalPoints).toLocaleString("en-IN")+" points</span></li>").join("")+"</ol>"
-        : "<div class='small-muted'>Leaderboard will appear after the first completed games.</div>";
-      $("statsStatus").textContent="Scorecard updated from submitted game results.";
+      const player=data.player||{};
+      const playerName=$("nickname").value.trim() || localStorage.getItem("wordwitPlayerName") || "";
+      const top=list.slice(0,2);
+      let html=top.length ? top.map((x,i)=>`<div class="leader-row"><div class="leader-rank">${i+1}</div><div class="leader-name">${escapeHtml(x.playerName)}</div><div class="leader-points">${Number(x.totalPoints||0).toLocaleString("en-IN")} pts</div></div>`).join("") : `<div class="leader-empty">The champions' table will appear after the first completed games.</div>`;
+      if(playerName){
+        const rank=Number(player.rank||0);
+        const points=Number(player.totalPoints||0);
+        const isTopTwo=rank>0 && rank<=2;
+        html+=`<div class="leader-you"><div class="leader-you-label">YOUR POSITION</div><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><strong>${rank>0?"Rank #"+rank:"Not ranked yet"} · ${escapeHtml(playerName)}</strong><strong>${points.toLocaleString("en-IN")} pts</strong></div><div class="small-muted" style="margin-top:5px">${Number(player.gamesCompleted||0)>0?(isTopTwo?"You're among today's displayed all-time leaders!":"Keep playing to climb the leaderboard."):"Complete your first puzzle to earn points and establish your ranking."}</div></div>`;
+      }else{
+        html+=`<div class="leader-you"><div class="leader-you-label">YOUR POSITION</div><div class="small-muted">Enter your display name in Player details to see your rank and points here.</div></div>`;
+      }
+      $("leaderboardContent").innerHTML=html;
+      $("statsStatus").textContent="Showing the top two players and your personal position.";
     }catch(err){$("statsStatus").textContent="Could not display the scorecard right now.";}
     delete window[callbackName];
   };
@@ -589,7 +2102,7 @@ async function subscribeToWordWit(){
     await postWordWitAction(payload);
     localStorage.setItem("wordwitPlayerName",name);
     $("welcomeMessage").textContent="Welcome back, "+name+"!";
-    $("subscriptionStatus").textContent="Your subscription request has been submitted. Thank you for joining WordWit! Your welcome name and contact details will be remembered on this browser. To change details or unsubscribe, use this section again.";
+    $("subscriptionStatus").textContent="Your WordWit registration request has been submitted. Welcome! We will keep you informed about the ZenPoints rewards launch. Your display name is remembered on this browser.";
     $("subscriptionConsent").checked=false;
   }catch(err){$("subscriptionStatus").textContent="Could not submit right now. Please try again later.";}
   finally{$("subscribeButton").disabled=false;}
@@ -600,7 +2113,7 @@ async function unsubscribeFromWordWit(){
   if(!email&&!whatsapp){$("subscriptionStatus").textContent="Enter the email address or WhatsApp number used for subscription.";return;}
   try{
     await postWordWitAction({action:"unsubscribe",email,whatsapp});
-    $("subscriptionStatus").textContent="Your unsubscribe request has been sent. Please allow the mailing/contact list to be updated.";
+    $("subscriptionStatus").textContent="Your request has been sent. Please allow the contact list to be updated.";
   }catch(err){$("subscriptionStatus").textContent="Could not submit the request. Please try again.";}
 }
 function sharePuzzle(){
